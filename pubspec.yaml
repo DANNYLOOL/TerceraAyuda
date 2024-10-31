@@ -1,0 +1,30 @@
+name: emotion_pulse
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.4.4 <4.0.0"
+
+dependencies:
+  fl_chart: ^0.68.0
+  flutter:
+    sdk: flutter
+  flutter_colorpicker: ^1.1.0
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+  mqtt_client: ^10.3.0
+  pulsator: ^1.0.0+2
+  supabase_flutter: ^2.6.0
+  syncfusion_flutter_gauges: ^26.2.9
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/map_marker.png
+    - assets/images/gradient_heart.png
