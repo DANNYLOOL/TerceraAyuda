@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -18,8 +17,10 @@ class HeartbeatSensor extends StatefulWidget {
 class _HeartbeatSensorState extends State<HeartbeatSensor> {
   String bpm = '';
   final supabase = Supabase.instance.client;
-  late final StreamSubscription<List<MqttReceivedMessage<MqttMessage>>>
-      _subscription;
+  late final StreamSubscription<List<MqttReceivedMessage<MqttMessage>>> _subscription;
+
+  int _count = 0;
+  int _sum = 0;
 
   @override
   void initState() {
@@ -30,14 +31,11 @@ class _HeartbeatSensorState extends State<HeartbeatSensor> {
   void suscribeToTopic(String topic) {
     widget.client.subscribe(topic, MqttQos.atMostOnce);
 
-    _subscription = widget.client.updates!
-        .listen((List<MqttReceivedMessage<MqttMessage>> c) {
+    _subscription = widget.client.updates!.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final MqttReceivedMessage<MqttMessage> receivedMessage = c[0];
       if (receivedMessage.topic == topic) {
-        final MqttPublishMessage message =
-            receivedMessage.payload as MqttPublishMessage;
-        final String payload =
-            MqttPublishPayload.bytesToStringAsString(message.payload.message);
+        final MqttPublishMessage message = receivedMessage.payload as MqttPublishMessage;
+        final String payload = MqttPublishPayload.bytesToStringAsString(message.payload.message);
         _onMessageReceived(payload);
       }
     });
@@ -51,13 +49,33 @@ class _HeartbeatSensorState extends State<HeartbeatSensor> {
       });
     }
 
-    await supabase
-        .from('datossensores')
-        .insert({'sensor_id': 3, 'valor': bpm}).onError(
-      (error, stackTrace) {
-        print('Error inserting data: $error');
-      },
-    );
+    // Update count and sum
+    _count += 1;
+    _sum += newValue;
+    final double avg = _sum / _count;
+
+    // Check if we reached 10 values, and if so, save to database
+    if (_count == 10) {
+      await _saveToDatabase(_sum, avg);
+
+      // Reset count and sum after saving
+      _count = 0;
+      _sum = 0;
+    }
+  }
+
+  Future<void> _saveToDatabase(int sum, double avg) async {
+    try {
+      await supabase.from('datossensores').insert({
+        'sensor_id': 3,
+        'sum': sum,
+        'average': avg,
+        'count': 10
+      });
+      print('Data saved successfully');
+    } catch (error) {
+      print('Error inserting data: $error');
+    }
   }
 
   @override

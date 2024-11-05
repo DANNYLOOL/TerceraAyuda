@@ -20,7 +20,7 @@ class _ActionButtonsState extends State<ActionButtons> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 16), // Espaciado entre botones
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               final builder = MqttClientPayloadBuilder();
@@ -42,7 +42,7 @@ class _ActionButtonsState extends State<ActionButtons> {
               elevation: 10,
             ),
           ),
-          const SizedBox(height: 16), // Espaciado entre botones
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               final builder = MqttClientPayloadBuilder();
@@ -63,7 +63,7 @@ class _ActionButtonsState extends State<ActionButtons> {
               elevation: 10,
             ),
           ),
-          const SizedBox(height: 16), // Espaciado entre botones
+          const SizedBox(height: 16),
           CustomColorPicker(
             topic: widget.topic[3],
             client: widget.client,
@@ -89,7 +89,7 @@ class _ActionButtonsState extends State<ActionButtons> {
               elevation: 10,
             ),
           ),
-          const SizedBox(height: 16), // Espaciado entre botones
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               final builder = MqttClientPayloadBuilder();
